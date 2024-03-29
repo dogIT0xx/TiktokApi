@@ -7,13 +7,13 @@ namespace TiktokApi.Entities
     public class User : IdentityUser
     {
         //(…, Name, Bio, avatar, tick, followings_count, follower_count, like_count)
-        [Column(TypeName = "nvarchar(21)")]
-        public string FullName { get; set; }
+        [Column(TypeName = "varchar(256)")]
+        public string? TiktokId { get; set; }
 
-        [Column(TypeName = "nvarchar(255)")]
+        [Column(TypeName = "nvarchar(256)")]
         public string Bio { get; set; }
 
-        [Column(TypeName = "varchar(max)")]
+        [Column(TypeName = "varchar(256)")]
         public string Avatar { get; set; }
 
         [DefaultValue("false")]
@@ -27,7 +27,5 @@ namespace TiktokApi.Entities
 
         [DefaultValue("0")]
         public int LikeCount { get; set; }
-
-        public IList<Video> Videos { get; set; }
     }
 }

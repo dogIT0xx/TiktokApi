@@ -6,13 +6,13 @@ namespace TiktokApi.Entities
     public class Video
     {
         //Id, UserId, Title, Src, UploadedAt, Duration, LikeCount, CommentCount, SoundTrack
-        [Column(TypeName = "nvarchar(450)")]
-        public Guid Id { get; set; }
+        [Column(TypeName = "varchar(450)")]
+        public string Id { get; set; }
 
         [ForeignKey(nameof(Author))]
         public string AuthorId { get; set; }
 
-        [Column(TypeName = "nvarchar(255)")]
+        [Column(TypeName = "nvarchar(256)")]
         public string Title { get; set; }
 
         [Column(TypeName = "varchar(max)")]
@@ -24,6 +24,9 @@ namespace TiktokApi.Entities
 
         [DefaultValue("0")]
         public int LikeCount { get; set; }
+
+        [DefaultValue("0")]
+        public int SaveCount { get; set; }
 
         [DefaultValue("0")]
         public int CommentCount { get; set; }

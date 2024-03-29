@@ -9,6 +9,9 @@ namespace TiktokApi.Migrations
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Video> Videos { get; set; }
+        public DbSet<Interact> Interacts { get; set; }
+        public DbSet<Follower> Follows { get; set; }
+        public DbSet<Following> Followings { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         { }
