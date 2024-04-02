@@ -9,6 +9,9 @@ using System.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CloudinaryDotNet;
+using Microsoft.AspNetCore.DataProtection;
+using TiktokApi.Repositories;
 
 namespace TiktokApi
 {
@@ -43,7 +46,7 @@ namespace TiktokApi
                 options.SignIn.RequireConfirmedPhoneNumber = false;
             });
             builder.Services
-                .AddIdentityApiEndpoints<IdentityUser>()
+                .AddIdentityApiEndpoints<User>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services
                 .AddAuthentication(options =>
@@ -68,18 +71,34 @@ namespace TiktokApi
                     };
                 });
             builder.Services.AddAuthorization();
+            builder.Services.AddRouting(options => options.LowercaseUrls = true);
+            builder.Services.AddControllers();
 
-            #region Cấu hình MailSender
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            #region Config Cloudinary
+            var cloudinarySetting = builder.Configuration.GetSection("Cloudinary");
+            var account = new Account
+            {
+                Cloud = cloudinarySetting.GetValue<string>("CloudName"),
+                ApiKey = cloudinarySetting.GetValue<string>("ApiKey"),
+                ApiSecret = cloudinarySetting.GetValue<string>("ApiSecret"),
+            };
+            builder.Services.AddSingleton(new Cloudinary(account));
+            #endregion
+
+            #region Config MailSender
             builder.Services.AddOptions();  // Kích hoạt Options, tự đọng tim cấu hình 
             var mailSetting = builder.Configuration.GetSection("MailSetting");  // đọc config
             builder.Services.Configure<MailSetting>(mailSetting); // map mailSetting vào MailSetting class
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             #endregion
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            #region Inject repositories
+            builder.Services.AddTransient<IVideoRepository, VideoRepository>();
+            #endregion
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.
@@ -92,7 +111,7 @@ namespace TiktokApi
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
-            app.MapIdentityApi<IdentityUser>();
+            // app.MapIdentityApi<User>();
             app.Run();
         }
     }

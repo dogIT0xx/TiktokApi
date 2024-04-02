@@ -10,6 +10,9 @@ namespace TiktokApi.Entities
         [Column(TypeName = "varchar(256)")]
         public string? TiktokId { get; set; }
 
+        public DateOnly DateOfBirth { get; set; }
+
+
         [Column(TypeName = "nvarchar(256)")]
         public string Bio { get; set; }
 
